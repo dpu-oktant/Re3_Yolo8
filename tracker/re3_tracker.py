@@ -25,8 +25,8 @@ SPEED_OUTPUT = True
 
 
 class Re3Tracker(object):
-    def __init__(self, gpu_id = 0):
-        #gpu_id = pt_util.setup_devices(gpu_id)[0]
+    def __init__(self, gpu_id=0):
+        gpu_id = pt_util.setup_devices(gpu_id)[0]
         USE_SMALL_NET = True
         if USE_SMALL_NET:
             self.network = Re3SmallNet(gpu_id)
