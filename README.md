@@ -3,6 +3,32 @@
 
 <img src="/demo/sample_1.gif" height="300"/> <img src="/demo/sample_2.gif" height="300"/>
 
+
+## proje amacı
+Bu proje, Emirhan, Haris ve Salih tarafından geliştirilmiştir. Projemizin temel amacı, RE3 ve YOLOv8 teknolojilerini entegre ederek güçlü bir nesne takip sistemi oluşturmaktır.
+
+## Kurulum
+Projeyi çalıştırmadan önce aşağıdaki kütüphanelerin sisteminize yüklü olduğundan emin olun:
+```bash
+pip3 install cvzone
+pip3 install torch torchvision
+```
+
+## Kullanım
+Projede iki ana dosya bulunmaktadır:
+
+Demo/re3_save.py: Bu dosya, verilen bir video üzerinden belirli bir initial_bbox değerini takip eder ve bu işlem sırasında video kaydeder. Dosyada belirtilen yolları (path) projenizin yapılandırmasına göre güncellemeniz gerekmektedir.
+
+Demo/re3_yolo8.py: Bu dosya, YOLOv8 algoritması ile çalışır ve nesne takibi için geliştirilmiştir. Bu dosyada da yolların doğru şekilde güncellenmesi gerekmektedir.
+
+Her iki dosya için de gerekli yolların (paths) doğru bir şekilde ayarlanması önemlidir. Bu, sistemin doğru çalışabilmesi için gereklidir.
+
+
+
+
+
+#
+
 This is the Official Repository for Re3 in PyTorch. However, it has some significant differences between it and the [TensorFlow repository](https://github.com/danielgordon10/re3-tensorflow).
 1. Due to PyTorch's dynamic graph construction, the network can now be trained one unroll at a time. This means less time preprocessing the images, but also it doesn't parallelize as well.
 1. The simulation code is removed as it does not work with this one unroll setup.
