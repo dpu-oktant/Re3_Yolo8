@@ -25,8 +25,9 @@ SPEED_OUTPUT = True
 
 
 class Re3Tracker(object):
-    def __init__(self, gpu_id):
+    def __init__(self, gpu_id = "cpu"):
         #gpu_id = pt_util.setup_devices(gpu_id)[0]
+        USE_SMALL_NET = True
         if USE_SMALL_NET:
             self.network = Re3SmallNet(gpu_id)
             pt_util.restore_from_folder(self.network, os.path.join(LOG_DIR, "checkpoints_small"))
