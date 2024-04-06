@@ -10,11 +10,11 @@ from ultralytics import YOLO
 basedir = os.path.dirname(__file__)
 sys.path.append(os.path.abspath(os.path.join(basedir, os.path.pardir)))
 
-model_path = "/content/best.pt"  # Update this path
+model_path = "/content/drive/MyDrive/new/best.pt"  # Update this path
 model = YOLO(model_path)
 
 # Open the video
-video_path = "/content/one1.mp4"  # Update this path
+video_path = "/content/drive/MyDrive/new/one1.mp4"  # Update this path
 cap = cv2.VideoCapture(video_path)
 if not cap.isOpened():
     print("Error opening video file.")
