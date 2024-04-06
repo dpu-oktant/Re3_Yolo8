@@ -13,7 +13,7 @@ DATA_DIR = os.path.join(
     os.path.dirname(__file__), os.path.pardir, os.path.pardir, os.path.pardir, os.path.pardir, "Datasets"
 )
 
-gpu_id = 0
+gpu_id ="0"
 
 # Drawing constants
 OUTPUT_WIDTH = 640
