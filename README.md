@@ -21,6 +21,10 @@ Demo/re3_save.py: Bu dosya, verilen bir video üzerinden belirli bir initial_bbo
 
 Demo/re3_yolo8.py: Bu dosya, YOLOv8 algoritması ile çalışır ve nesne takibi için geliştirilmiştir. Bu dosyada da yolların doğru şekilde güncellenmesi gerekmektedir.
 
+```bash
+pip3 install ultralytics
+```
+
 Her iki dosya için de gerekli yolların (paths) doğru bir şekilde ayarlanması önemlidir. Bu, sistemin doğru çalışabilmesi için gereklidir.
 
 
