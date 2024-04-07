@@ -11,6 +11,8 @@ basedir = os.path.dirname(__file__)
 sys.path.append(os.path.abspath(os.path.join(basedir, os.path.pardir)))
 
 model_path = "best.pt"  # Update this path
+print(os.getcwd())
+
 model = YOLO(model_path)
 
 # Open the video
@@ -20,7 +22,7 @@ if not cap.isOpened():
     print("Error opening video file.")
 
 # Prepare to save the output video
-output_path = '/sonuc.mp4'
+output_path = 'sonuc.mp4'
 fps = int(cap.get(cv2.CAP_PROP_FPS))
 frame_size = (int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)))
 out = cv2.VideoWriter(output_path, cv2.VideoWriter_fourcc(*'mp4v'), fps, frame_size)
