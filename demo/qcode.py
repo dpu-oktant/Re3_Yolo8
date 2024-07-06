@@ -24,6 +24,7 @@ gst_pipeline = (
     "videoconvert ! appsink"
 )
 cap = cv2.VideoCapture(gst_pipeline, cv2.CAP_GSTREAMER)
+cap.set(cv2.CAP_PROP_FPS,10)
 # The line `song = AudioSegment.from_wav("beep-02.wav")` is loading an audio file named "beep-02.wav"
 # and creating an `AudioSegment` object from it. This object can be used to play the audio file later
 # in the code.
