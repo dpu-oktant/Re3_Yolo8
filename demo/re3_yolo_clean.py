@@ -47,7 +47,7 @@ def get_initial_bbox(results):
         return [x1.cpu().item(), y1.cpu().item(), x2.cpu().item(), y2.cpu().item()]
     return None
 
-def process_frame_tracker(frame, model, tracker, is_initialized, initial_bbox):
+def process_frame_tracker(frame, model, tracker, is_initialized, initial_bbox ,left_margin, right_margin, top_margin, bottom_margin ,border_color, box_thickness):
     results = model(frame)
     bbox = get_initial_bbox(results)
     
@@ -62,9 +62,16 @@ def process_frame_tracker(frame, model, tracker, is_initialized, initial_bbox):
     if is_initialized:  # Use RE3 tracker if the object is already being tracked or YOLO is not detecting anything
         frameRGB = frame[:, :, ::-1]
         bbox = tracker.track("target_object", frameRGB)
+        # if bbox is > left_margin and bbox is < right_margin and bbox is > top_margin and bbox is < bottom_margin:
+
         if bbox is not None and len(bbox) == 4:
+            
             x1, y1, x2, y2 = map(int, bbox)
             cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
+            if x1 > left_margin and x2 < right_margin and y1 > top_margin and y2 < bottom_margin:
+                cv2.rectangle(frame, (left_margin, top_margin), (right_margin, bottom_margin), border_color , box_thickness)
+
+                
             
         else:
             print("Invalid bounding box:", bbox)
@@ -85,7 +92,7 @@ def main():
     sys.path.append(os.path.abspath(os.path.join(basedir, os.path.pardir)))
     
     model_path = "best.pt"
-    video_path = "one3.mp4"
+    video_path = "one4.mp4"
     output_path = "sonuc.mp4"
     gst_pipeline = (
     "udpsrc port=5600 "
@@ -119,9 +126,9 @@ def main():
         if not ret:
             break
         if is_qrcode:
-            frame, is_initialized, initial_bbox = process_frame_qrcode(frame, is_initialized, initial_bbox)
+            frame, is_initialized, initial_bbox = process_frame_qrcode(frame, is_initialized, initial_bbox )
         else:
-         frame, is_initialized, initial_bbox =  process_frame_tracker(frame, model, tracker, is_initialized, initial_bbox)
+         frame, is_initialized, initial_bbox =  process_frame_tracker(frame, model, tracker, is_initialized, initial_bbox,left_margin, right_margin, top_margin, bottom_margin ,border_color, box_thickness)
         out.write(frame)
         cv2.imshow('scanner', frame)
 
