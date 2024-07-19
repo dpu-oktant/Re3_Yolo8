@@ -16,6 +16,7 @@ cap = cv2.VideoCapture(gst_pipeline, cv2.CAP_GSTREAMER)
 # Check if the video capture is initialized
 if not cap.isOpened():
     print("Error: Could not open video stream")
+    
     exit()
 
 # Get the width and height of the frames
