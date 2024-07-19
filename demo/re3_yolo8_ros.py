@@ -82,7 +82,6 @@ try:
                         cv2.rectangle(overlay,(x11, y11), (x22, y22), (0, 255, 0), 2)
                         frame = cv2.addWeighted(overlay, 0.5, frame, 0.5, 0)
                         # cv2.rectangle(frame, (x1, y1), (x2, y2), (255, 255, 255), 2)
-                        
                         out.write(frame)
                         cv2.imshow('Video Stream with Tracking', frame)
                 else:
