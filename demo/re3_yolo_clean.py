@@ -3,8 +3,10 @@ import sys
 import tarfile
 import cv2
 import torch
+import time
 from ultralytics import YOLO
 from pyzbar.pyzbar import decode
+centered_count = 0
 
 basedir = os.path.dirname(__file__)
 sys.path.append(os.path.abspath(os.path.join(basedir, os.path.pardir)))
@@ -47,7 +49,7 @@ def get_initial_bbox(results):
         return [x1.cpu().item(), y1.cpu().item(), x2.cpu().item(), y2.cpu().item()]
     return None
 
-def process_frame_tracker(frame, model, tracker, is_initialized, initial_bbox ,left_margin, right_margin, top_margin, bottom_margin ,border_color, box_thickness):
+def process_frame_tracker(frame, model, tracker, is_initialized, initial_bbox ,left_margin, right_margin, top_margin, bottom_margin ,border_color, box_thickness , is_centered,centered_time ,w,h):
     results = model(frame)
     bbox = get_initial_bbox(results)
     
@@ -65,18 +67,34 @@ def process_frame_tracker(frame, model, tracker, is_initialized, initial_bbox ,l
         # if bbox is > left_margin and bbox is < right_margin and bbox is > top_margin and bbox is < bottom_margin:
 
         if bbox is not None and len(bbox) == 4:
-            
             x1, y1, x2, y2 = map(int, bbox)
             cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
+            # add text time like 00:00:00:0000 to the frame in the top left corner video size is w,h
+            cv2.putText(frame,time.strftime("%H:%M:%S:%MS"),(0,50),cv2.FONT_HERSHEY_COMPLEX,2,(0,255,255),2)
+            # add text mode like "auto" or "manual" to the frame in the top right corner
+            cv2.putText(frame,"Auto",(w-100,50),cv2.FONT_HERSHEY_COMPLEX,2,(0,255,255),2)
+            
             if x1 > left_margin and x2 < right_margin and y1 > top_margin and y2 < bottom_margin:
-                cv2.rectangle(frame, (left_margin, top_margin), (right_margin, bottom_margin), border_color , box_thickness)
-
+                if not is_centered:
+                    centered_time = time.time()
+                    is_centered = True
+                else :
+                    if time.time() - centered_time > 4:
+                        is_centered = False
+                        centered_count += 1
+                        
+                        
+                cv2.putText(frame,"In Hit Area" + int(time.time() - centered_time),(left_margin+5,bottom_margin+5),cv2.FONT_HERSHEY_COMPLEX,2,(0,255,255),2)        
+                cv2.rectangle(frame, (left_margin, top_margin), (right_margin, bottom_margin), (0, 255, 0) , box_thickness)
+            else:
+                is_centered = False
+                cv2.rectangle(frame, (left_margin, top_margin), (right_margin, bottom_margin), border_color, box_thickness)
                 
             
         else:
             print("Invalid bounding box:", bbox)
     
-    return frame, is_initialized, initial_bbox
+    return frame, is_initialized, initial_bbox, is_centered, centered_time
 def process_frame_qrcode(frame,  is_initialized, initial_bbox):
     detectedBarcode = decode(frame)
     if not detectedBarcode:
@@ -110,7 +128,7 @@ def main():
     right_margin = int(w * 0.75)
     top_margin = int(h * 0.1)
     bottom_margin = int(h * 0.9)
-    box_thickness = 3
+    box_thickness = 2
     border_color = (255, 255, 255)
     center_point = (w // 2, h // 2)  # Calculate center point
     
@@ -128,7 +146,7 @@ def main():
         if is_qrcode:
             frame, is_initialized, initial_bbox = process_frame_qrcode(frame, is_initialized, initial_bbox )
         else:
-         frame, is_initialized, initial_bbox =  process_frame_tracker(frame, model, tracker, is_initialized, initial_bbox,left_margin, right_margin, top_margin, bottom_margin ,border_color, box_thickness)
+         frame, is_initialized, initial_bbox =  process_frame_tracker(frame, model, tracker, is_initialized, initial_bbox,left_margin, right_margin, top_margin, bottom_margin ,border_color, box_thickness,w,h)
         out.write(frame)
         cv2.imshow('scanner', frame)
 
