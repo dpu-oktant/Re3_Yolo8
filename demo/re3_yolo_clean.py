@@ -84,7 +84,7 @@ def process_frame_tracker(frame, model, tracker, is_initialized, initial_bbox ,l
                         centered_count += 1
                         
                         
-                cv2.putText(frame,"In Hit Area" + int(time.time() - centered_time),(left_margin+5,bottom_margin+5),cv2.FONT_HERSHEY_COMPLEX,2,(0,255,255),2)        
+                cv2.putText(frame,"In Hit Area " + f": {int(time.time() - centered_time)}",(left_margin+5,bottom_margin+5),cv2.FONT_HERSHEY_COMPLEX,2,(0,255,255),2)        
                 cv2.rectangle(frame, (left_margin, top_margin), (right_margin, bottom_margin), (0, 255, 0) , box_thickness)
             else:
                 is_centered = False
@@ -138,6 +138,8 @@ def main():
         
     initial_bbox = None
     is_initialized = False
+    is_centered = False
+    centered_time = time.time()
 
     while cap.isOpened():
         ret, frame = cap.read()
@@ -146,7 +148,7 @@ def main():
         if is_qrcode:
             frame, is_initialized, initial_bbox = process_frame_qrcode(frame, is_initialized, initial_bbox )
         else:
-         frame, is_initialized, initial_bbox =  process_frame_tracker(frame, model, tracker, is_initialized, initial_bbox,left_margin, right_margin, top_margin, bottom_margin ,border_color, box_thickness,w,h)
+         frame, is_initialized, initial_bbox ,is_centered, centered_time =  process_frame_tracker(frame, model, tracker, is_initialized, initial_bbox,left_margin, right_margin, top_margin, bottom_margin ,border_color, box_thickness ,is_centered, centered_time,w,h)
         out.write(frame)
         cv2.imshow('scanner', frame)
 
