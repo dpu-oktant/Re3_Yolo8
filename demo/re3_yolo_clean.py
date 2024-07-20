@@ -94,7 +94,7 @@ def process_frame_tracker(frame, model, tracker, is_initialized, initial_bbox ,l
         else:
             print("Invalid bounding box:", bbox)
     
-    return frame, is_initialized, initial_bbox, is_centered, centered_time
+    return frame, is_initialized, initial_bbox, is_centered, centered_time, centered_count
 def process_frame_qrcode(frame,  is_initialized, initial_bbox):
     detectedBarcode = decode(frame)
     if not detectedBarcode:
