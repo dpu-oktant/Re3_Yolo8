@@ -154,6 +154,8 @@ def main():
          frame, is_initialized, initial_bbox ,is_centered, centered_time , centered_count =  process_frame_tracker(frame, model, tracker, is_initialized, initial_bbox,left_margin, right_margin, top_margin, bottom_margin ,border_color, box_thickness ,is_centered, centered_time,w,h ,centered_count)
         out.write(frame)
         cv2.imshow('scanner', frame)
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
 
     cap.release()
     out.release()
