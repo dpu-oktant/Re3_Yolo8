@@ -6,7 +6,7 @@ import torch
 import time
 from ultralytics import YOLO
 from pyzbar.pyzbar import decode
-centered_count = 0
+
 
 basedir = os.path.dirname(__file__)
 sys.path.append(os.path.abspath(os.path.join(basedir, os.path.pardir)))
@@ -49,7 +49,7 @@ def get_initial_bbox(results):
         return [x1.cpu().item(), y1.cpu().item(), x2.cpu().item(), y2.cpu().item()]
     return None
 
-def process_frame_tracker(frame, model, tracker, is_initialized, initial_bbox ,left_margin, right_margin, top_margin, bottom_margin ,border_color, box_thickness , is_centered,centered_time ,w,h):
+def process_frame_tracker(frame, model, tracker, is_initialized, initial_bbox ,left_margin, right_margin, top_margin, bottom_margin ,border_color, box_thickness , is_centered,centered_time ,w,h,centered_count):
     results = model(frame)
     bbox = get_initial_bbox(results)
     
@@ -140,6 +140,7 @@ def main():
     is_initialized = False
     is_centered = False
     centered_time = time.time()
+    centered_count = 0
 
     while cap.isOpened():
         ret, frame = cap.read()
@@ -148,7 +149,7 @@ def main():
         if is_qrcode:
             frame, is_initialized, initial_bbox = process_frame_qrcode(frame, is_initialized, initial_bbox )
         else:
-         frame, is_initialized, initial_bbox ,is_centered, centered_time =  process_frame_tracker(frame, model, tracker, is_initialized, initial_bbox,left_margin, right_margin, top_margin, bottom_margin ,border_color, box_thickness ,is_centered, centered_time,w,h)
+         frame, is_initialized, initial_bbox ,is_centered, centered_time , centered_count =  process_frame_tracker(frame, model, tracker, is_initialized, initial_bbox,left_margin, right_margin, top_margin, bottom_margin ,border_color, box_thickness ,is_centered, centered_time,w,h ,centered_count)
         out.write(frame)
         cv2.imshow('scanner', frame)
 
