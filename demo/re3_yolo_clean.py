@@ -59,7 +59,7 @@ def process_frame_tracker(frame, model, tracker, is_initialized, initial_bbox ,l
         is_initialized = True
     else :
         print( " Yolo No object detected")
-        cv2.putText(frame,"we do not use yolo now ",(50,50),cv2.FONT_HERSHEY_COMPLEX_SMALL,0.5,(0,255,255),1)
+        # cv2.putText(frame,"we do not use yolo now ",(50,50),cv2.FONT_HERSHEY_COMPLEX_SMALL,0.5,(0,255,255),1)
 
     if is_initialized:  # Use RE3 tracker if the object is already being tracked or YOLO is not detecting anything
         frameRGB = frame[:, :, ::-1]
@@ -70,10 +70,12 @@ def process_frame_tracker(frame, model, tracker, is_initialized, initial_bbox ,l
             x1, y1, x2, y2 = map(int, bbox)
             cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
             # add text time like 00:00:00:0000 to the frame in the top left corner video size is w,h
-            cv2.putText(frame,time.strftime("%H:%M:%S:%MS"),(0,50),cv2.FONT_HERSHEY_COMPLEX,2,(0,0,0),2)
+            cv2.putText(frame,time.strftime("%H:%M:%S"),(0,20),cv2.FONT_HERSHEY_COMPLEX_SMALL,0.7,(0,0,0),1)
             # add text mode like "auto" or "manual" to the frame in the top right corner
-            cv2.putText(frame,"Auto",(w-100,50),cv2.FONT_HERSHEY_COMPLEX_SMALL,0.5,(0,255,255),1)
-            
+            cv2.putText(frame,"Auto",(w-50,20),cv2.FONT_HERSHEY_COMPLEX_SMALL,0.7,(0,0,0),1)
+            center_bbox = ((x1 + x2) // 2, (y1 + y2) // 2)
+            center_frame = (w // 2, h // 2)
+            cv2.line(frame, center_frame, center_bbox, (255, 255, 255), 2)
             if x1 > left_margin and x2 < right_margin and y1 > top_margin and y2 < bottom_margin:
                 if not is_centered:
                     centered_time = time.time()
@@ -84,7 +86,7 @@ def process_frame_tracker(frame, model, tracker, is_initialized, initial_bbox ,l
                         centered_count += 1
                         
                         
-                cv2.putText(frame,"In Hit Area " + f": {int(time.time() - centered_time)}",(left_margin+5,bottom_margin+5),cv2.FONT_HERSHEY_COMPLEX,2,(0,255,255),2)        
+                cv2.putText(frame,"In Hit Area " + f": {int(time.time() - centered_time)}",(left_margin+10,bottom_margin-10),cv2.FONT_HERSHEY_COMPLEX_SMALL,0.7,(0,0,0),1)        
                 cv2.rectangle(frame, (left_margin, top_margin), (right_margin, bottom_margin), (0, 255, 0) , box_thickness)
             else:
                 is_centered = False
