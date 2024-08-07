@@ -112,7 +112,7 @@ def main():
     sys.path.append(os.path.abspath(os.path.join(basedir, os.path.pardir)))
     
     model_path = "best.pt"
-    video_path = "one4.mp4"
+    video_path = "output_video_fast_2.mp4"
     output_path = "sonuc.mp4"
     gst_pipeline = (
     "udpsrc port=5600 "
