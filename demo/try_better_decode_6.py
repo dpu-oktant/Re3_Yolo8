@@ -14,14 +14,13 @@ def optimize_and_decode_qr(image_path):
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
     print("Hafif keskinleştirme uygulanıyor...")
-    # Hafif bir keskinleştirme filtresi uyguluyoruz
     kernel_sharpening = np.array([[0, -0.5, 0], 
                                   [-0.5, 3, -0.5],
                                   [0, -0.5, 0]])
     sharpened = cv2.filter2D(gray, -1, kernel_sharpening)
 
     print("Kenarlar tespit ediliyor...")
-    edged = cv2.Canny(sharpened, 30, 100)  # Kenar tespiti için düşük eşik değerleri
+    edged = cv2.Canny(sharpened, 30, 100)
 
     print("Konturlar bulunuyor...")
     contours, _ = cv2.findContours(edged, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
@@ -64,8 +63,28 @@ def optimize_and_decode_qr(image_path):
                                            [0, -1, 0]])
         final_warped = cv2.filter2D(warped, -1, kernel_sharpening_post)
 
+        # Daha fazla keskinleştirme ve bulanıklık azaltma
+        print("Daha fazla keskinleştirme uygulanıyor...")
+        kernel_sharpening_more = np.array([[0, -1, 0], 
+                                           [-1, 6, -1],
+                                           [0, -1, 0]])
+        final_warped = cv2.filter2D(final_warped, -1, kernel_sharpening_more)
+
+        print("Gürültü azaltma uygulanıyor...")
+        final_warped = cv2.fastNlMeansDenoisingColored(final_warped, None, 10, 10, 7, 21)
+
+        print("Min filter azaltılıyor...")
+        final_warped = cv2.erode(final_warped, np.ones((2, 2), np.uint8))
+
+        print("Kontrast artırma uygulanıyor...")
+        final_warped_gray = cv2.cvtColor(final_warped, cv2.COLOR_BGR2GRAY)
+        final_warped_gray = cv2.equalizeHist(final_warped_gray)
+
+        print("Adaptif eşikleme uygulanıyor...")
+        final_warped_thresh = cv2.adaptiveThreshold(final_warped_gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2)
+
         print("QR kodu çözülüyor...")
-        qr_codes = decode(final_warped)
+        qr_codes = decode(final_warped_thresh)
         if qr_codes:
             for qr_code in qr_codes:
                 qr_data = qr_code.data.decode('utf-8')
@@ -73,16 +92,15 @@ def optimize_and_decode_qr(image_path):
         else:
             print("QR kodu çözümlemesi başarısız oldu. Kod algılanamadı.")
 
-        # İşlenmiş resmi göster ve kaydet
-        cv2.imshow("Düzleştirilmiş QR Kodu", final_warped)
-        cv2.imwrite("/mnt/data/optimized_qr.png", final_warped)
+        cv2.imshow("Düzleştirilmiş QR Kodu", final_warped_thresh)
+        cv2.imwrite("/mnt/data/optimized_qr.png", final_warped_thresh)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
     else:
         print("QR kodu bulunamadı.")
 
 # Daha önce elde edilen görselin yolu
-image_path = 'try_3.png'
+image_path = 'try_2.png'
 
 # QR kodunu tespit et ve çöz
 optimize_and_decode_qr(image_path)

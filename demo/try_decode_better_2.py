@@ -70,5 +70,5 @@ def detect_and_decode_qr(image_path):
     else:
         print("QR kodu bulunamadı.")
 
-image_path = 'try_2.png'  # Resminizin yolunu buraya yazın
+image_path = 'try_3.png'  # Resminizin yolunu buraya yazın
 detect_and_decode_qr(image_path)
